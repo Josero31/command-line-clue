@@ -220,9 +220,9 @@ Location of the crime is still unknown - the room must have been empty when it h
     base_dir = Path(base_path)
 
     if base_dir.exists():
-      shutil.rmtree(base_dir)
+      shutil.rmtree(base_dir, ignore_errors=True)
 
-    base_dir.mkdir()
+    base_dir.mkdir(exist_ok=True)
 
     # Create notebook.md
 
@@ -321,7 +321,7 @@ else:
 '''
     
     accuse_path = Path("game/accuse.py")
-    with open(accuse_path, "w") as f:
+    with open(accuse_path, "w", encoding="utf-8") as f:
         f.write(script_content)
 
   def check_lateral_path(self, current_segments, next_segments):
