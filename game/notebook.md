@@ -2,7 +2,7 @@
 
 ## Suspects
 - [ ] The Tailor
-- [ ] The Carpenter
+- [x] The Carpenter
 - [ ] The Postman
 
 ## Weapons
