@@ -240,8 +240,8 @@ Location of the crime is still unknown - the room must have been empty when it h
     with open(room_path / "persons.txt", "w") as f:
       f.write("\n".join(content.get("people", [])))
 
-      with open(room_path / "objects.txt", "w") as f:
-        f.write("\n".join(content.get("objects", [])))
+    with open(room_path / "objects.txt", "w") as f:
+      f.write("\n".join(content.get("objects", [])))
 
   def create_game_directories(self, base_path: str = "game"):
     base_dir = Path(base_path)
@@ -266,7 +266,7 @@ Location of the crime is still unknown - the room must have been empty when it h
           continue
 
         # Get relative path for content lookup
-        rel_path = str(new_path.relative_to(base_dir))
+        rel_path = str(new_path.relative_to(base_dir)).replace("\\", "/")
 
         # Get and create room contents
         contents = self.room_contents.get(rel_path, {"people": [], "objects": []})
