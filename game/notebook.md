@@ -6,7 +6,7 @@
 - [ ] The Postman
 
 ## Weapons
-- [ ] Walking Stick
+- [x] Walking Stick
 - [x] Brass Bell
 - [ ] Steel Ruler
 
