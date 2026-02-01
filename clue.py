@@ -168,7 +168,7 @@ class MysteryGame:
     # Prioritize adding people first, then objects
     extra_people_needed = min(
       additional_items_needed,
-      len(self.all_people) - len(self.suspects)
+      len(self.all_people) - num_suspects
     )
     extra_objects_needed = max(
       0,
@@ -178,7 +178,7 @@ class MysteryGame:
     # Cap by available pool sizes
     extra_objects_needed = min(
       extra_objects_needed,
-      len(self.all_objects) - len(self.weapons)
+      len(self.all_objects) - num_weapons
     )
 
     # Create pools for distribution
