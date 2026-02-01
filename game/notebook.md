@@ -1,7 +1,7 @@
 # Detective's Notebook
 
 ## Suspects
-- [ ] The Tailor
+- [x] The Tailor
 - [x] The Carpenter
 - [ ] The Postman
 
