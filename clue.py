@@ -158,39 +158,66 @@ class MysteryGame:
     available_weapons = [w for w in self.weapons if w != self.murder_weapon]
     available_rooms = [r for r in self.all_rooms if r != self.murder_location]
 
-    # Scale the number of extra people and objects based on the game difficulty
-    # For easier games (fewer suspects), we add fewer red herrings
-    extra_people_count = min(
-      len(available_rooms) - len(available_suspects),
-      round((20 - num_suspects) * 0.5)  # Use fewer red herrings for easier games
+    # Calculate how many total items we need to ensure only murder_location is empty
+    # We need at least one item per available room
+    total_items_needed = len(available_rooms)
+    current_items = len(available_suspects) + len(available_weapons)
+    additional_items_needed = max(0, total_items_needed - current_items)
+    
+    # Split additional items between people and objects
+    # Prioritize adding people first, then objects
+    extra_people_needed = min(
+      additional_items_needed,
+      len(self.all_people) - len(self.suspects)
     )
-    extra_objects_count = min(
-      len(available_rooms) - len(available_weapons),
-      round((20 - num_weapons) * 0.5)
+    extra_objects_needed = max(
+      0,
+      additional_items_needed - extra_people_needed
+    )
+    
+    # Cap by available pool sizes
+    extra_objects_needed = min(
+      extra_objects_needed,
+      len(self.all_objects) - len(self.weapons)
     )
 
-    # Create pools for distribution with scaled red herrings
+    # Create pools for distribution
     distribution_people = available_suspects + random.sample(
       [p for p in self.all_people if p not in self.suspects],
-      extra_people_count
+      extra_people_needed
     )
 
     distribution_objects = available_weapons + random.sample(
       [o for o in self.all_objects if o not in self.weapons],
-      extra_objects_count
+      extra_objects_needed
     )
 
     # Initialize all rooms as empty
     self.room_contents = {room: {"people": [], "objects": []} for room in self.all_rooms}
 
-    # Distribute items, ensuring a good spread of clues
-    for person in distribution_people:
+    # Combine all items for distribution
+    all_items = [("person", p) for p in distribution_people] + [("object", o) for o in distribution_objects]
+    
+    # First, ensure every available room gets at least one item
+    # This guarantees only the murder_location will be empty
+    shuffled_available_rooms = available_rooms[:]
+    random.shuffle(shuffled_available_rooms)
+    
+    for i, room in enumerate(shuffled_available_rooms):
+      if i < len(all_items):
+        item_type, item = all_items[i]
+        if item_type == "person":
+          self.room_contents[room]["people"].append(item)
+        else:
+          self.room_contents[room]["objects"].append(item)
+    
+    # Distribute any remaining items randomly across available rooms
+    for item_type, item in all_items[len(shuffled_available_rooms):]:
       room = random.choice(available_rooms)
-      self.room_contents[room]["people"].append(person)
-
-    for obj in distribution_objects:
-      room = random.choice(self.all_rooms)
-      self.room_contents[room]["objects"].append(obj)
+      if item_type == "person":
+        self.room_contents[room]["people"].append(item)
+      else:
+        self.room_contents[room]["objects"].append(item)
 
   def generate_notebook(self):
     """Generates the content for notebook.md"""
